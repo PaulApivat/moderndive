@@ -21,6 +21,9 @@
 # What if, instead of single estimate of (unknowable) population parameter, we want range of plausible values?
 # Ans: Confidence Interval
 
+# Taking multiple samples (not do in practice)
+# BOOTSTRAPPING distributions taking muliple RE-sample from a SINGLE sample
+
 # Packages
 library(tidyverse)
 library(moderndive)
@@ -86,3 +89,64 @@ ggplot(data = resampled_means, mapping = aes(x = mean_year))
 
 ## Histogram of distribution of mean_years for 35 friends is called BOOTSTRAP DISTRIBUTION
 ## Is APPROXIMATES the sampling distribution of sample mean (ch8)
+
+### Computer Simulation of REsampling
+
+
+## Virtual resampling ONCE
+
+pennies_sample # original sample of 50 pennies
+
+# size = 50 matches size of original sample
+# resample with replacement = TRUE
+# default reps = 1
+virtual_resample <- pennies_sample %>%
++ rep_sample_n(size = 50, replace = TRUE)
+
+virtual_resample %>% summarize(resample_mean = mean(year)) %>% pull(resample_mean) # [1] 1995.66
+
+## Virtual resampling 35 times
+virtual_resamples <- pennies_sample %>% 
+                rep_sample_n(size = 50, replace = TRUE, reps = 35)
+
+virtual_resampled_means <- virtual_resamples %>% 
+                group_by(replicate) %>% 
+                summarize(mean_year = mean(year))
+
+# plot distribution of resampled means on histogram
+ggplot(data = virtual_resampled_means, mapping = aes(x = mean_year)) 
+    + geom_histogram(binwidth = 1, color = 'orange', boundary = 1990) 
+    + labs(x = "REsample mean year")
+
+
+
+## Virtual resampling 1000 times
+
+# re-sampling 1000 times
+virtual_resamples_1k <- pennies_sample %>% 
+            rep_sample_n(size = 50, replace = TRUE, reps = 1000)
+
+# compute 1000 sample means
+virtual_resampled_means_1k <- virtual_resamples_1k %>%
+    + group_by(replicate) %>%
+    + summarize(mean_year = mean(year))
+
+# histogram distribution of 1000 sample means (bell shape more clear)
+ggplot(data = virtual_resampled_means_1k, aes(x = mean_year)) 
+    + geom_histogram(binwidth = 1, color = 'dodgerblue', boundary = 1990) 
+    + labs(x = 'sample mean (1000 re-samples)')
+
+# mean of 1000 re-sampled means (1995.42)
+
+virtual_resampled_means_1k %>% 
+    summarize(mean_of_means = mean(mean_year)) %>% 
+    pull(mean_of_means)
+
+# add geom_vline representing mean of 1000 re-sampled means
+ggplot(data = virtual_resampled_means_1k, aes(x = mean_year)) 
+    + geom_histogram(binwidth = 1, color = 'dodgerblue', boundary = 1990) 
+    + labs(x = 'sample mean (1000 re-samples)') 
+    + geom_vline(xintercept = 1995.42, color = 'red')
+
+
+### Understanding Confidence Intervals
