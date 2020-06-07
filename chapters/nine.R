@@ -23,6 +23,7 @@
 
 # Taking multiple samples (not do in practice)
 # BOOTSTRAPPING distributions taking muliple RE-sample from a SINGLE sample
+# BOOTSTRAPPING: study effects of sampling variation on esitmates from the 'effort' of a SINGLE sample
 
 # Packages
 library(tidyverse)
@@ -173,5 +174,84 @@ resampled_means_1k <- ggplot(data = virtual_resampled_means_1k, aes(x = mean_yea
 library(patchwork)
 resampled_means_35 + resampled_means_1k
 
-######## Understanding Confidence Intervals
+######## Understanding Confidence Intervals ##########
+## Analogy: Point Estimate (spear fishing) vs Confidence Interval (fishing with a net)
+
+## Confidence Interval construction: 
+## 2 Methods: Percentile Method and Standard Error Method
+
+## Percentile method: compute 2.5th and 97.5th percentiles
+## Standard Error method: 
+# - compute Standard Deviation from bootstrap distribution (aka Standard Error or SE)
+# - calc 95% CI: Re-Sampled Mean +/- (1.96 * SE)
+
+#### CONSTRUCTING CONFIDENCE INTERVAL ####
+
+### compare process of getting means_of_means between DPLYR vs INFER packages
+
+### DPLYR work flow ###
+
+# re-sampling 1000 times
+virtual_resamples_1k <- pennies_sample %>% 
+            rep_sample_n(size = 50, replace = TRUE, reps = 1000)
+
+# compute 1000 sample means
+virtual_resampled_means_1k <- virtual_resamples_1k %>%
+    + group_by(replicate) %>%
+    + summarize(mean_year = mean(year))
+
+# mean of 1000 re-sampled means (1995.42)
+virtual_resampled_means_1k %>% 
+    summarize(mean_of_means = mean(mean_year)) %>% 
+    pull(mean_of_means)
+
+# tying all dplyr pipes into ONE workflow
+# 1995.484 (vs 1995.419 originally)
+pennies_sample %>% 
+    rep_sample_n(size = 50, replace = TRUE, reps = 1000) %>% 
+    group_by(replicate) %>% 
+    summarize(mean_year = mean(year)) %>% 
+    summarize(mean_of_means = mean(mean_year)) %>% 
+    pull(mean_of_means)
+
+### INFER work flow ###
+## main advantage: 
+# - `infer` verb names better align with overall resampling framework needed to construct confidence intervals
+# - can jump back and forth seamlessly between CI and hypothesis testing w minimal code changes
+# - simpler for conducing inference when you have more than one variable (two groups or regression > than two var)
+
+bootstrap_distribution <- pennies_sample %>% 
+    specify(response = year) %>% 
+    generate(reps = 1000) %>% 
+    calculate(stat = 'mean')
+
+visualise(bootstrap_distribution)
+
+# comparison of visual plot workflow
+
+visualise(bootstrap_distribution)
+
+# OR
+
+ggplot(data = bootstrap_distribution, mapping = aes(x = stat)) 
+    + geom_histogram(binwidth = 1, color = 'white')
+
+
+####### CONFIDENCE INTERVAL with INFER ######
+
+### Percentile method w Infer
+percentile_ci <- bootstrap_distribution %>% 
+    get_confidence_interval(level = 0.95, type = 'percentile')
+
+percentile_ci
+
+# Visually Plot Confidence Interval
+visualise(bootstrap_distribution) 
+    + shade_confidence_interval(endpoints = percentile_ci)
+
+
+### Standard error method w Infer
+
+
+
 
