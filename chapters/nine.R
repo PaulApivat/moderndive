@@ -189,6 +189,7 @@ resampled_means_35 + resampled_means_1k
 
 ### compare process of getting means_of_means between DPLYR vs INFER packages
 
+
 ### DPLYR work flow ###
 
 # re-sampling 1000 times
@@ -213,6 +214,23 @@ pennies_sample %>%
     summarize(mean_year = mean(year)) %>% 
     summarize(mean_of_means = mean(mean_year)) %>% 
     pull(mean_of_means)
+
+# NOTE: Authors do not provide VISUAL of SHADED Confidence interval in GGPLOT 
+## Confidence Interval in Shaded Yellow between 1991 and 2000
+# So here it is:
+
+virtual_resampled_means_1k %>% 
+    summarize(mean_of_means = mean(mean_year), 
+        quantile1 = quantile(mean_year, probs = 0.025), 
+        quantile2 = quantile(mean_year, probs = 0.975))
+
+## NOTE: note exact decimals for quantile1 and quantile2 
+ggplot(data = virtual_resampled_means_1k, aes(x = mean_year)) 
+    + geom_histogram(binwidth = 1, color = 'dodgerblue', boundary = 1990) 
+    + annotate("rect", xmin = 1991, xmax = 2000, ymin = 0, ymax = Inf, fill = 'yellow', alpha = .5)
+
+
+
 
 ### INFER work flow ###
 ## main advantage: 
@@ -249,8 +267,24 @@ percentile_ci
 visualise(bootstrap_distribution) 
     + shade_confidence_interval(endpoints = percentile_ci)
 
+# OR
+visualise(bootstrap_distribution) 
+    + shade_ci(endpoints = percentile_ci, color = 'hotpink', fill = 'khaki')
 
-### Standard error method w Infer
+### Standard error method w Infer ###
+x_bar <- pennies_sample %>% 
+    summarize(mean_year = mean(year)) %>% 
+    pull(mean_year)
+
+standard_error_ci <- bootstrap_distribution %>% 
+    get_confidence_interval(type = "se", point_estimate = x_bar)
+
+standard_error_ci
+
+# easy visualization
+visualise(bootstrap_distribution) 
+    + shade_confidence_interval(endpoints = standard_error_ci)
+
 
 
 
