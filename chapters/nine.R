@@ -285,6 +285,22 @@ standard_error_ci
 visualise(bootstrap_distribution) 
     + shade_confidence_interval(endpoints = standard_error_ci)
 
+##### INTERPRETING CONFIDENCE INTERVAL #####
+# Analogy: did the net capture the fish?
+
+### PRECISE INTERPRETATION of 95% Confidence Interval (frequentist)
+### If we repeat our sampling procedure a large number of times, we expect about 95%
+### of the resulting confidence interval(s) to capture the value of the population parameter
+
+### OR we can expect our confidence interval to include the true population parameter 95% of the time
+
+### SHORTHAND INTERPRETATION:  
+### We are 95% "confident" that a 95% confidence interval captures the value of the population parameter
+
+### INCORRECT interpreation: "There is a 95% probability that the confidence interval contains the population parameter"
+### (reference figure 9.27 - each confidence interval either does or doesn't contain the population parameter; probability is 1 or 0)
+
+###
 
 
 
