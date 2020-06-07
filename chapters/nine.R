@@ -30,6 +30,9 @@ library(moderndive)
 library(infer)
 library(patchwork)  # plot arrangement
 
+# load file
+load(file = 'moderndive.RData')
+
 ###### What is the average year on US pennies in 2019?
 
 pennies_sample
@@ -90,7 +93,7 @@ ggplot(data = resampled_means, mapping = aes(x = mean_year))
 ## Histogram of distribution of mean_years for 35 friends is called BOOTSTRAP DISTRIBUTION
 ## Is APPROXIMATES the sampling distribution of sample mean (ch8)
 
-### Computer Simulation of REsampling
+######## Computer Simulation of REsampling
 
 
 ## Virtual resampling ONCE
@@ -105,6 +108,9 @@ virtual_resample <- pennies_sample %>%
 
 virtual_resample %>% summarize(resample_mean = mean(year)) %>% pull(resample_mean) # [1] 1995.66
 
+## NOTE: When you virtually resample ONCE, there is a SINGLE sample statistic (1995.66) and 
+## so there is no sample distribution to visualize
+
 ## Virtual resampling 35 times
 virtual_resamples <- pennies_sample %>% 
                 rep_sample_n(size = 50, replace = TRUE, reps = 35)
@@ -116,7 +122,22 @@ virtual_resampled_means <- virtual_resamples %>%
 # plot distribution of resampled means on histogram
 ggplot(data = virtual_resampled_means, mapping = aes(x = mean_year)) 
     + geom_histogram(binwidth = 1, color = 'orange', boundary = 1990) 
-    + labs(x = "REsample mean year")
+    + labs(x = "REsample mean year (35 re-samples)")
+    + geom_vline(xintercept = 1995.679, color = 'dodgerblue')
+
+### Adding mean_of_means and visualizing at geom_vline
+
+# [1] 1995.679
+virtual_resampled_means %>% 
+    summarize(mean_of_means = mean(mean_year)) %>% 
+    pull(mean_of_means)
+
+resampled_means_35 <- ggplot(data = virtual_resampled_means, mapping = aes(x = mean_year)) 
+    + geom_histogram(binwidth = 1, color = 'orange', boundary = 1990) 
+    + labs(x = "REsample mean year (35 re-samples)") 
+    + geom_vline(xintercept = 1995.679, color = 'dodgerblue')
+
+
 
 
 
@@ -143,10 +164,14 @@ virtual_resampled_means_1k %>%
     pull(mean_of_means)
 
 # add geom_vline representing mean of 1000 re-sampled means
-ggplot(data = virtual_resampled_means_1k, aes(x = mean_year)) 
+resampled_means_1k <- ggplot(data = virtual_resampled_means_1k, aes(x = mean_year)) 
     + geom_histogram(binwidth = 1, color = 'dodgerblue', boundary = 1990) 
     + labs(x = 'sample mean (1000 re-samples)') 
     + geom_vline(xintercept = 1995.42, color = 'red')
 
+# compare distribution shape of Virtual Resampling (35x) vs Virtual Resampling (1000x)
+library(patchwork)
+resampled_means_35 + resampled_means_1k
 
-### Understanding Confidence Intervals
+######## Understanding Confidence Intervals
+
