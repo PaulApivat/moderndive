@@ -300,7 +300,19 @@ visualise(bootstrap_distribution)
 ### INCORRECT interpreation: "There is a 95% probability that the confidence interval contains the population parameter"
 ### (reference figure 9.27 - each confidence interval either does or doesn't contain the population parameter; probability is 1 or 0)
 
-###
+## ---------------- Example with Red Marbles ------------------- ##
+
+
+
+####### WIDTH OF CONFIDENCE INTERVAL ########
+
+# 1. HIgher Confidence Levels (99% vs 80%) tend to produce Wider confidence Intervals.
+
+# --------------------------------- 99% -------------------------------- #
+# ----------------------- 80% ----------------------- #
+
+# 2. Larger Sample (re-sampling) Sizes tend to produce Narrower confidence intervals.
+# 2a. As sample size increases, the standard error (standard deviation of the re-sampling  distributions).
 
 
 
