@@ -313,8 +313,13 @@ ggplot(data = null_distribution_movies, mapping = aes(x = stat))
 
 
 
-### Get actual p-value
+########## Get actual p-value
+### 0.006 still greater than 0.001
+### Fail to Reject Null Hypothesis that there is no difference 
+### in rating between Action and Romantic movies
 
+null_distribution_movies %>% 
+    get_p_value(obs_stat = obs_diff_mean, direction = 'both')
 
 
 
