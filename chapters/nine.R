@@ -316,4 +316,32 @@ visualise(bootstrap_distribution)
 
 
 
+##### BOOTSTRAPPING AND CONFIDENCE INTERVAL WORKFLOW #####
+## Description: The real value of ModernDive and Statistcal Inference
+## is the thought-process clearly laid out by the authors. 
+## Few practicing data scientists do this explicitly, but its worth 
+## making this a fundamental explicit requirement for any project.
+
+# 1. Frame the business question in terms of Sampling and Population Setup - 
+# Who is the study population? What was/is the sampling methodology? 
+# Prepare to make explicit, your assumptions about what the sample can generalize to.
+
+# 2. Ask: What population parameter are you trying to identify? (Even if unknowable)
+# Is it a proportion? Difference in population proportion? The average of a continuous variable?
+# Comparison between two groups? 
+
+# 3. Ask: What is the point estimate or sample statistic that has or will be identified? 
+# Explicitly draw link between sample statistic and population parameter you're trying to estimate.
+
+# 4. Account for Sampling Variation: What happens if an experiment is repeated? 
+# Would the same sample statistic be obtained? (Not likely due to sampling variation)
+# How does sampling variation affect the sample statistic?
+
+# 5. What would be a Plausible Range of Values, if we accounted for sampling variation?
+# Use Confidence Intervals!
+
+# 6. IRL we can't do virtual sampling, so there's often a SINGLE sample statistic 
+# we need to determine whether it can generalize to a the population.
+# One strategy is Bootstrap Re-sampling with Replacement
+
 
