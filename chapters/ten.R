@@ -134,10 +134,71 @@ promotions_shuffled %>%
 # Significance level: if p-value does not fall below alpha, "FAIL TO REJECT" (not same as 'accept')
 
 
+##### INFER Package Workflow for Hypothesis Testing #####
+### NOTE: Data does not change in each step, only META-Data
 
+###----- Specify ------###
 
+# Goal: Effects of Gender on Promotion Decision
+# response variable = decision; explanatory variable = gender
 
+#Response: decision (factor)
+#Explanatory: gender (factor)
+promotions %>%
+    specify(formula = decision ~ gender, success = "promoted")
 
+###----- Hypothesize  ------###
+
+#Response: decision (factor)
+#Explanatory: gender (factor)
+#Null Hypothesis: independence
+promotions %>%
+    specify(formula = decision ~ gender, success = "promoted") %>%
+    hypothesize(null = "independence")
+
+### ------ Generate (Replicates) ----- ###
+
+promotions_generate <- promotions %>% 
+    specify(formula = decision ~ gender, success = 'promoted') %>% 
+    hypothesize(null = 'independence') %>% 
+    generate(reps = 1000, type = 'permute')
+
+### ------ Calculate (Summary statistics) ----- ###
+# Sampling distribution assuming Null is true is Null Distribution
+
+null_distribution <- promotions %>%
+    specify(formula = decision ~ gender, success = 'promoted') %>%
+    hypothesize(null = "independence") %>%
+    generate(reps = 1000, type = 'permute') %>%
+    calculate(stat = 'diff in props', order = c('male', 'female'))
+
+## Observed Test Statistic (29.2% difference)
+obs_diff_prop <- promotions %>%
++ specify(decision ~ gender, success = "promoted") %>%
++ calculate(stat = 'diff in props', order = c('male', 'female'))
+
+### ------ Visualize ----- ###
+
+## histogram null distribution (infer)
+visualize(null_distribution, bins = 10)
+
+## Add P-Value
+visualize(null_distribution, bins = 10) 
+    + shade_p_value(obs_stat = obs_diff_prop, direction = 'right')
+
+## ggplot 
+ggplot(data = null_distribution, mapping = aes(x = stat)) 
+    + geom_histogram(bins = 10, color = 'white')
+
+## ggplot + p-values
+## note: obs_diff_prop = 0.292
+ggplot(data = null_distribution, mapping = aes(x = stat)) 
+    + geom_histogram(bins = 10, color = 'white') 
+    + annotate('rect', xmin = 0.292, xmax = Inf, ymin = 0, ymax = Inf, fill = 'red', alpha = .5)
+
+### Shaded region = p-value
+### p-value is probability of obtaining a test statistic just as or more extreme 
+### than observed test statistic assuming the null hypothesis is true. 
 
 
 
