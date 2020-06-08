@@ -239,5 +239,98 @@ se_ci <- bootstrap_distribution %>%
 visualise(bootstrap_distribution) 
     + shade_confidence_interval(endpoints = se_ci)
 
+########## Case Study: Are action or romantic movies rated higher? #######
+
+movies
+
+movies_sample
+
+# EDA with boxplots
+ggplot(data = movies_sample, mapping = aes(x = genre, y = rating)) 
+    + geom_boxplot() 
+    + labs(y = 'IMDB rating')
+
+# Find average and sd ratings fo each genre
+movies_sample %>%
+    group_by(genre) %>%
+    summarize(n = n(), mean_rating = mean(rating), 
+                            std_dev = sd(rating))
+
+# Finding Differences Between Means
+
+
+#Response: rating (numeric)
+#Explanatory: genre (factor)
+movies_sample %>% 
+    specify(formula = rating ~ genre)
+
+#Response: rating (numeric)
+#Explanatory: genre (factor)
+#Null Hypothesis: independence
+movies_sample %>% 
+    specify(formula = rating ~ genre) %>% 
+    hypothesize(null = 'independence')
+
+# generate - replicates, shuffle, re-sampling 
+movies_sample %>% 
+    specify(formula = rating ~ genre) %>% 
+    hypothesize(null = 'independence') %>% 
+    generate(reps = 1000, type = 'permute') %>% 
+    View()
+
+# calculate - summary statistics
+
+# null_distribution
+null_distribution_movies <- movies_sample %>% 
+    specify(formula = rating ~ genre) %>% 
+    hypothesize(null = 'independence') %>% 
+    generate(reps = 1000, type = 'permute') %>% 
+    calculate(stat = 'diff in means', order = c('Action', 'Romance'))
+
+# observed test statistic
+obs_diff_mean <- movies_sample %>%
+    specify(formula = rating ~ genre) %>%
+    calculate(stat = 'diff in means', order = c('Action', 'Romance'))
+
+
+### Visualize p-value (shaded area)
+visualise(null_distribution_movies, bins = 10) 
+    + shade_p_value(obs_stat = obs_diff_mean, direction = 'both')
+
+
+### ggplot2 alternative
+ggplot(data = null_distribution_movies, mapping = aes(x = stat)) 
+    + geom_histogram(bins = 10, color = 'white') 
+    + geom_vline(xintercept = -1.047222, color = 'red', size = 3) 
+    + annotate('rect', 
+        xmin = -Inf, 
+        xmax = obs_diff_mean$stat, 
+        ymin = 0, 
+        ymax = Inf, 
+        fill = 'red', 
+        alpha = .2)
+
+
+
+
+### Get actual p-value
+
+
+
+
+
+
+
+
+#------- Types of inferences: means, proportions and their differences
+
+# Sampling bowl (red,white) => proportions
+# Pennies => means
+# Yawning => differences in proportion
+# Promotions (men, women) => differences in proportion
+# movies => differences in means
+
+
+
 
 
