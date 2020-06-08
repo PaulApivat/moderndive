@@ -332,6 +332,7 @@ visualise(bootstrap_distribution)
 
 # 3. Ask: What is the point estimate or sample statistic that has or will be identified? 
 # Explicitly draw link between sample statistic and population parameter you're trying to estimate.
+# Can the sample statistic we see occur by chance?
 
 # 4. Account for Sampling Variation: What happens if an experiment is repeated? 
 # Would the same sample statistic be obtained? (Not likely due to sampling variation)

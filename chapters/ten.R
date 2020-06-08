@@ -35,7 +35,32 @@ ggplot(data = promotions, mapping = aes(x = gender, fill = decision))
     + geom_bar() 
     + labs(x = "Gender of name on resume")
 
+## See proportion of gender w promotion decision
+promotions %>%
+    + group_by(gender, decision) %>%
+    + tally(sort = TRUE)
 
+# A tibble: 4 x 3
+# Groups:   gender [2]
+#  gender decision     n
+#  <fct>  <fct>    <int>
+#1 male   promoted    21      87.5% Male Promoted
+#2 female promoted    14      58.3% Female Promoted
+#3 female not         10
+#4 male   not          3
+
+### Resumes with male names had 29.2% more promotions than female names
+
+
+
+### Does this provide CONCLUSIVE evidence of advantage for males?
+## Alternatively can 29.2% difference in *this* sample occur by chance? 
+
+
+
+## Shuffling ONCE - Hypothesis Testing is about hypothetical universe(s)
+# NULL Hypothesis = one universe
+# Alternative Hypothesis = another universe
 
 
 
