@@ -105,7 +105,39 @@ promotions_shuffled %>%
 # Turn attention BACK to IRL: is the 29.2% difference
 
 # Ask: In a HYPOTHESIZED UNIVERSE of no gender discrimination (Null Hypothesis), 
-# HOW LIKELY would it be that we observe this (29.2%) difference?
+# HOW LIKELY would it be that we observe this (29.2%) difference? Or is it just sampling variation?
+
+####### HYPOTHESIS TESTING USING PERMUTATIONS ########
+
+# population parameter: The "true" difference in population proportion; between Male - Female Promotion Rates
+# sample statistic: 29.2% difference in sample proportion; Male - Female Promotion Rates
+# Is this sampling variation?
+# Construct two universe - NULL (no gender discrimination) vs ALT (yes gender discrimination)
+# In the NULL universe, how likely would be observe a 29.2% difference?
+# A 29.2% difference in favor of male is greater than 0, but is it "meaningfully greater than 0?"
+
+# NULL - different due to sampling variation;
+# ALT - true differences
+
+# 1. Population Parameter : A HYPOTHESIS is a statement about the value of an unknown population parameter.
+# 2. Hypothesis: Null & Alternative; 1-sided (Male > Female) or 2-sided (Male != Female)
+# 3. Observed Test Statistic: (single sample) Point Esimate observed in real life (ie. 29.2% difference)
+# 4. Test Statistic: point estimate or sample statistic to test hypothesis
+# 5. Null Distribution: Sampling distribution of test statistic ASSUMING the NULL hypothesis is true.
+# Ask: Assuming "no gender discrimination", how does the test statistic vary due to sampling variation?
+# Ask: Will the difference in sample proportions (male - female) vary due to sampling under the Null Hypothesis universe
+# 6. P-Value: probability of obtaining a test statistic as extreme or more extreme than the OBSERVED TEST STATISTIC ASSUMING
+# NULL hypothesis is true (surprise element)
+
+# P-Value In a universe of no gender discrimination, how surprise would we be to see 29.2% in favor of men for promotion.
+# Significance level: set before hand, if p-value falls below alpha, we reject Null hypothesis
+# Significance level: if p-value does not fall below alpha, "FAIL TO REJECT" (not same as 'accept')
+
+
+
+
+
+
 
 
 
