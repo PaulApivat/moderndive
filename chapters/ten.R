@@ -209,5 +209,35 @@ null_distribution %>%
     get_p_value(obs_stat = obs_diff_prop, direction = 'right')
 
 
+#### (hypothesis) Comparison with Confidence Interval ####
+
+# note: infer package allows seamless switching between Hypothesis Testing & Confidence Interval
+# simply remove hypothesize() and change permute -> bootstrap
+bootstrap_distribution <- promotions %>% 
+    specify(formula = decision ~ gender, success = 'promoted') %>% 
+    generate(reps = 1000, type = 'bootstrap') %>% 
+    calculate(stat = 'diff in props', order = c('male', 'female'))
+
+percentile_ci_ch10 <- bootstrap_distribution %>%
+    get_confidence_interval(level = 0.95, type = 'percentile')
+
+#### Visualize bootstrap distribution with Confidence Interval
+#### Percentile method
+# note: 0 is NOT in the CI - so male and female promotions are truly different
+# note: entire CI lies above 0 so in favor of men
+visualise(bootstrap_distribution) 
+    + shade_confidence_interval(endpoints = percentile_ci_ch10)
+
+
+#### Visualize bootstrap distribution with Confidence Interval
+#### STandard Error Method because distribution is Normal
+se_ci <- bootstrap_distribution %>% 
+    get_confidence_interval(level = 0.95, 
+                            type = 'se', 
+                            point_estimate = obs_diff_prop)
+
+visualise(bootstrap_distribution) 
+    + shade_confidence_interval(endpoints = se_ci)
+
 
 
