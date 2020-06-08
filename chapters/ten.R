@@ -177,7 +177,7 @@ obs_diff_prop <- promotions %>%
 + specify(decision ~ gender, success = "promoted") %>%
 + calculate(stat = 'diff in props', order = c('male', 'female'))
 
-### ------ Visualize ----- ###
+### ------ Visualize Null Distribution & P-Value ----- ###
 
 ## histogram null distribution (infer)
 visualize(null_distribution, bins = 10)
@@ -200,6 +200,13 @@ ggplot(data = null_distribution, mapping = aes(x = stat))
 ### p-value is probability of obtaining a test statistic just as or more extreme 
 ### than observed test statistic assuming the null hypothesis is true. 
 
+
+### Exact P-Value (0.026)
+# Probability of observing a 29.2% difference between Male and Female promotion
+# Assuming we're in a Null Universe (no gender discrimination) is 0.026 - rare
+# since p-value is < 0.05 (pre-specified), we're inclined to REJECT THE NULL
+null_distribution %>% 
+    get_p_value(obs_stat = obs_diff_prop, direction = 'right')
 
 
 
