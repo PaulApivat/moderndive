@@ -88,3 +88,45 @@ ggplot(regression_points, aes(x = bty_avg, y = residual))
     + geom_hline(yintercept = 0, col = 'blue', size = 1)
 
 ###### SIMULTION-BASED INFERENCE FOR REGRESSION (instead of theory-based) ########
+
+## Bootstrap Distribution for the fitted slope (0.067)
+bootstrap_distn_slope <- evals_ch5 %>%
+    specify(formula = score ~ bty_avg) %>%
+    generate(reps = 1000, type = "bootstrap") %>%
+    calculate(stat = "slope")
+
+visualize(bootstrap_distn_slope)
+
+## Percentile-method 
+percentile_ci_ch11 <- bootstrap_distn_slope %>%
+    get_confidence_interval(type = 'percentile', level = 0.95)
+
+## Standard error method (should be near 0.067)
+
+# find sample statistic - slope
+observed_slope <- evals %>%
+    specify(score ~ bty_avg) %>%
+    calculate(stat = 'slope')
+
+# create 95% confidence interval
+se_ci_ch11 <- bootstrap_distn_slope %>%
+    get_ci(level = 0.95, 
+            type = 'se', 
+            point_estimate = observed_slope)
+
+## Visualize
+## Compare all 3 confidence interval approaches
+# 1 percentile
+# 2 standard error
+# 3 theory-based
+
+# Three Confidence Interval and Zero-Line (added)
+
+visualise(bootstrap_distn_slope) 
+    + shade_confidence_interval(endpoints = percentile_ci_ch11, fill = NULL, linetype = "solid", color = "#1b9e77") 
+    + shade_confidence_interval(endpoints = se_ci_ch11, fill = NULL, linetype = 'dashed', color = '#d95f02') 
+    + shade_confidence_interval(endpoints = c(0.035, 0.099), fill = NULL, linetype = 'dotted', color = '#7570b3') 
+    # add zero line
+    # another cool feature how Infer Package is Tidy-friendly
+    + geom_vline(xintercept = 0, color = 'red')
+
