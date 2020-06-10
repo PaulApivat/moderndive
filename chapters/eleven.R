@@ -66,4 +66,25 @@ get_regression_table(score_model)
 
 
 ###### REFRESHER ON RESIDUALS
+
+# Get Residual Points from score_model
+regression_points <- get_regression_points(score_model)
+
+# Linearity of Relationships
+
+# Independence of Residuals
+# violated because professors teach more than once class
+evals %>% select(ID, prof_ID, score, bty_avg) %>% view()
+
+# Normality of Residuals
+# center should be a 0, should be normal shaped - check histogram
+ggplot(regression_points, aes(x = residual)) 
+    + geom_histogram(binwidth = 0.25, color = "white") 
+    + labs(x = 'Residual')
+
+# Equality of Variance
+ggplot(regression_points, aes(x = bty_avg, y = residual)) 
+    + geom_point() + labs(x = 'Beauty Score', y = "Residual") 
+    + geom_hline(yintercept = 0, col = 'blue', size = 1)
+
 ###### SIMULTION-BASED INFERENCE FOR REGRESSION (instead of theory-based) ########
