@@ -89,6 +89,8 @@ ggplot(regression_points, aes(x = bty_avg, y = residual))
 
 ###### SIMULTION-BASED INFERENCE FOR REGRESSION (instead of theory-based) ########
 
+#### ---CONFIDENCE INTERVAL--- ####
+
 ## Bootstrap Distribution for the fitted slope (0.067)
 bootstrap_distn_slope <- evals_ch5 %>%
     specify(formula = score ~ bty_avg) %>%
@@ -130,3 +132,26 @@ visualise(bootstrap_distn_slope)
     # another cool feature how Infer Package is Tidy-friendly
     + geom_vline(xintercept = 0, color = 'red')
 
+
+#### ---HYPOTHESIS TESTING--- ####
+
+null_distn_slope <- evals %>%
+    specify(score ~ bty_avg) %>%
+    hypothesize(null = "independence") %>%
+    generate(reps = 1000, type = 'permute') %>%
+    calculate(stat = 'slope')
+
+# null distribution of re-sampled slope
+# notice center o distribution at 0 because in a 
+# NULL Universe there is NO RELATIONSHIP between score and bty_avg
+# NO RELATIONSHIP = slope of zero
+
+visualise(null_distn_slope)
+
+# see null distribution in relation to sample statistic slope (0.067)
+visualise(null_distn_slope) 
+    + geom_vline(xintercept = 0.067, color = 'red', size = 3)
+
+# get exact p-value
+null_distn_slope %>% 
+    get_p_value(obs_stat = observed_slope, direction = 'both')
